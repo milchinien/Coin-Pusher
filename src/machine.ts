@@ -554,7 +554,9 @@ export class Machine {
   layout(vw: number, vh: number): Layout {
     const weltB = W + RAND * 2;
     const weltH = GEHAEUSE_UNTEN - GEHAEUSE_OBEN + COMBO_PLATZ;
-    const links = vw > 1100 ? FREI_LINKS : 20;
+    // Schmaler als 1100 px faellt zuerst der Schnellkauf weg (der Baum bleibt
+    // ueber Tab erreichbar), unter 800 px auch die Muenzwahl. Siehe style.css.
+    const links = vw > 800 ? FREI_LINKS : 20;
     const rechts = vw > 1100 ? FREI_RECHTS : 20;
     const verfB = Math.max(200, vw - links - rechts);
     const verfH = Math.max(200, vh - FREI_OBEN - FREI_UNTEN);
