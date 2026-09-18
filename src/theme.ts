@@ -95,7 +95,7 @@ function defineSkin(s: Omit<Skin, "shadow" | "shadowSoft">): Skin {
 
 const KLASSISCH = defineSkin({
   name: "klassisch",
-  label: "Klassisch",
+  label: "Classic",
 
   bgDeep: "#241f30",
   bg: "#2e2a3d",
@@ -134,7 +134,7 @@ const KLASSISCH = defineSkin({
  */
 const HERBST = defineSkin({
   name: "herbst",
-  label: "Herbst",
+  label: "Autumn",
 
   bgDeep: "#1b1210",
   bg: "#2b1a13",

@@ -71,8 +71,8 @@ const praegerei = (l: number) => Math.pow(0.85, l);
 const sonderKraft = (l: number) => 1 + 0.3 * l;
 const sonderGlueck = (l: number) => 0.0075 * l;
 
-const pct = (v: number, d = 0) => `${(v * 100).toFixed(d)} %`;
-const sec = (v: number, d = 1) => `${v.toFixed(d)} s`;
+const pct = (v: number, d = 0) => `${(v * 100).toFixed(d)}%`;
+const sec = (v: number, d = 1) => `${v.toFixed(d)}s`;
 const mal = (v: number) => `×${v.toFixed(2)}`;
 
 /* ============================================================== Knoten === */
@@ -81,14 +81,14 @@ const mal = (v: number) => `×${v.toFixed(2)}`;
 const KRAFT_TEXT: Record<CoinKind, { titel: string; icon: string; text: string }> = {
   kupfer: { titel: "", icon: "", text: "" },
   silber: { titel: "", icon: "", text: "" },
-  gold: { titel: "Wucht", icon: "✸", text: "Größerer Aufprallradius — sie fegt mehr Münzen zur Seite." },
-  riese: { titel: "Rammbock", icon: "⬤", text: "Ihr Aufprall schiebt den Haufen noch weiter nach vorn." },
-  magnet: { titel: "Feldstärke", icon: "◎", text: "Größere Reichweite und stärkerer Zug des Magnetfelds." },
-  spreng: { titel: "Sprengkraft", icon: "✹", text: "Größerer Radius und stärkerer Stoß der Explosion an der Kante." },
-  klebe: { titel: "Haftung", icon: "⬢", text: "Klebt mehr Nachbarn zusammen und hält länger." },
-  geist: { titel: "Durchlässigkeit", icon: "◌", text: "Taucht noch näher an der Kante wieder auf." },
-  koenig: { titel: "Krönung", icon: "♛", text: "Stärkerer Multiplikator auf die gemeinsame Kaskade." },
-  chaos: { titel: "Unordnung", icon: "✺", text: "Der zufällige Effekt fällt stärker aus." },
+  gold: { titel: "Impact", icon: "✸", text: "Bigger impact radius — it sweeps more coins aside." },
+  riese: { titel: "Battering Ram", icon: "⬤", text: "Its impact shoves the pile even further forward." },
+  magnet: { titel: "Field Strength", icon: "◎", text: "Wider reach and a stronger pull for the magnetic field." },
+  spreng: { titel: "Blast Power", icon: "✹", text: "Bigger radius and a harder kick for the blast at the edge." },
+  klebe: { titel: "Grip", icon: "⬢", text: "Glues more neighbors together and holds longer." },
+  geist: { titel: "Phasing", icon: "◌", text: "Reappears even closer to the edge." },
+  koenig: { titel: "Coronation", icon: "♛", text: "A stronger multiplier on the shared cascade." },
+  chaos: { titel: "Disorder", icon: "✺", text: "The random effect hits harder." },
 };
 
 const UNLOCK: Record<CoinKind, { kosten: number; icon: string; farbe: TreeNodeDef["color"] }> = {
@@ -133,7 +133,7 @@ function sonderKnoten(kind: CoinKind): TreeNodeDef[] {
       growth: 1,
       req: [[ELTERN[kind], 1]],
       desc: () =>
-        `${c.kurz}<br><br>Schaltet die <b>${c.name}</b> in der Münzwahl frei.<br>Wert <b>${c.wert}</b> · Preis je Einwurf <b>${c.preis}</b>`,
+        `${c.kurz}<br><br>Adds the <b>${c.name}</b> to your coin bar.<br>Value <b>${c.wert}</b> · Cost per drop <b>${c.preis}</b>`,
     },
     {
       id: `kraft_${kind}`,
@@ -145,11 +145,11 @@ function sonderKnoten(kind: CoinKind): TreeNodeDef[] {
       growth: 3,
       req: [[`coin_${kind}`, 1]],
       desc: (l) =>
-        `${k.text} Die ${c.name} ist außerdem mehr wert.<br><br>Kraft und Wert: <b>${mal(sonderKraft(l))}</b>`,
+        `${k.text} It's also worth more.<br><br>Power and value: <b>${mal(sonderKraft(l))}</b>`,
     },
     {
       id: `glueck_${kind}`,
-      title: `${c.name.replace("münze", "")}glück`,
+      title: `${c.name.replace(/ Coin$/, "")} Luck`,
       icon: "✦",
       color: u.farbe,
       max: 4,
@@ -157,7 +157,7 @@ function sonderKnoten(kind: CoinKind): TreeNodeDef[] {
       growth: 3.2,
       req: [[`coin_${kind}`, 1]],
       desc: (l) =>
-        `Jede <b>Kupfermünze</b> — auch aus dem Auto-Einwurf — wird mit dieser Chance ohne Aufpreis zur ${c.name}.<br><br>Chance: <b>${pct(sonderGlueck(l))}</b>`,
+        `Every <b>Copper</b> coin — even from Auto-Drop — has this chance to turn into a ${c.name} for free.<br><br>Chance: <b>${pct(sonderGlueck(l))}</b>`,
     },
   ];
 }
@@ -166,42 +166,42 @@ const ROH: TreeNodeDef[] = [
   /* ================================================= Start ============= */
   {
     id: "automat",
-    title: "Der Automat",
+    title: "The Machine",
     icon: "▣",
     color: "teal",
     max: 1,
     baseCost: 0,
     growth: 1,
     desc: () =>
-      `Dein Münzschieber. Wirf Münzen ein, schiebe den Haufen über die Kante und kaufe von hier aus jeden Ausbau.<br><br><b>Jeder Ast beginnt hier.</b>`,
+      `Your coin pusher. Drop coins, shove the pile over the edge and buy every upgrade from here.<br><br><b>Every branch starts here.</b>`,
   },
 
   /* ================================================= Einwurf ============ */
   {
     id: "vorrat",
-    title: "Münzvorrat",
+    title: "Coin Supply",
     icon: "≡",
     color: "amber",
     max: 5,
     baseCost: 12,
     growth: 2.0,
     req: [["automat", 1]],
-    desc: (l) => `Mehr Plätze im Münzvorrat.<br><br>Plätze: <b>${vorratGroesse(l)}</b>`,
+    desc: (l) => `More room in your coin supply.<br><br>Capacity: <b>${vorratGroesse(l)}</b>`,
   },
   {
     id: "nachschub",
-    title: "Nachschub",
+    title: "Refill",
     icon: "↻",
     color: "amber",
     max: 5,
     baseCost: 20,
     growth: 2.1,
     req: [["vorrat", 1]],
-    desc: (l) => `Der Vorrat füllt sich schneller.<br><br>Eine Münze alle <b>${sec(vorratTakt(l), 2)}</b>`,
+    desc: (l) => `Your supply refills faster.<br><br>One coin every <b>${sec(vorratTakt(l), 2)}</b>`,
   },
   {
     id: "regen",
-    title: "Münzregen",
+    title: "Coin Shower",
     icon: "⁂",
     color: "amber",
     max: 4,
@@ -209,13 +209,13 @@ const ROH: TreeNodeDef[] = [
     growth: 3.2,
     req: [["nachschub", 3]],
     desc: (l) =>
-      `In festen Abständen regnet ein Schwall Kupfermünzen gratis auf die Plattform.<br><br>${
-        l > 0 ? `Alle <b>${sec(regenTakt(l), 0)}</b> · <b>${regenMenge(l)}</b> Münzen` : "Noch aus"
+      `Every so often, a burst of free Copper coins rains onto the board.<br><br>${
+        l > 0 ? `Every <b>${sec(regenTakt(l), 0)}</b> · <b>${regenMenge(l)}</b> coins` : "Not active yet"
       }`,
   },
   {
     id: "auto",
-    title: "Auto-Einwurf",
+    title: "Auto-Drop",
     icon: "▼",
     color: "amber",
     max: 5,
@@ -223,13 +223,13 @@ const ROH: TreeNodeDef[] = [
     growth: 2.3,
     req: [["vorrat", 1]],
     desc: (l) =>
-      `Der Automat wirft selbst Kupfermünzen aus dem Vorrat ein — nie gegen Geld.<br><br>${
-        l > 0 ? `Eine Münze alle <b>${sec(autoTakt(l), 2)}</b>` : "Noch aus"
+      `The machine drops Copper coins from your supply by itself — never for cash.<br><br>${
+        l > 0 ? `One coin every <b>${sec(autoTakt(l), 2)}</b>` : "Not active yet"
       }`,
   },
   {
     id: "autoziel",
-    title: "Zielautomatik",
+    title: "Auto-Aim",
     icon: "⌖",
     color: "amber",
     max: 1,
@@ -237,11 +237,11 @@ const ROH: TreeNodeDef[] = [
     growth: 1,
     req: [["auto", 2]],
     desc: () =>
-      `Liegt eine Truhe auf dem Feld, zielt der Auto-Einwurf meistens <b>genau hinter sie</b>.`,
+      `When a chest is on the board, Auto-Drop usually aims <b>right behind it</b>.`,
   },
   {
     id: "zwilling",
-    title: "Zwillingsschacht",
+    title: "Twin Chute",
     icon: "⇊",
     color: "amber",
     max: 4,
@@ -249,35 +249,35 @@ const ROH: TreeNodeDef[] = [
     growth: 3,
     req: [["autoziel", 1]],
     desc: (l) =>
-      `Jeder automatische Einwurf wirft mit dieser Chance eine <b>zweite Münze</b> aus dem Vorrat hinterher.<br><br>Chance: <b>${pct(autoZweite(l))}</b>`,
+      `Each Auto-Drop has this chance to send a <b>second coin</b> from your supply right after it.<br><br>Chance: <b>${pct(autoZweite(l))}</b>`,
   },
 
   /* ================================================= Schieber =========== */
   {
     id: "tempo",
-    title: "Schiebertempo",
+    title: "Pusher Speed",
     icon: "»",
     color: "teal",
     max: 5,
     baseCost: 15,
     growth: 2.0,
     req: [["automat", 1]],
-    desc: (l) => `Der Schieber fährt schneller.<br><br>Tempo: <b>${mal(tempo(l))}</b>`,
+    desc: (l) => `The pusher moves faster.<br><br>Speed: <b>${mal(tempo(l))}</b>`,
   },
   {
     id: "hub",
-    title: "Schubtiefe",
+    title: "Push Reach",
     icon: "↧",
     color: "teal",
     max: 5,
     baseCost: 25,
     growth: 2.1,
     req: [["tempo", 1]],
-    desc: (l) => `Der Schieber fährt weiter vor.<br><br>Hub: <b>${hub(l)}</b>`,
+    desc: (l) => `The pusher reaches further forward.<br><br>Stroke: <b>${hub(l)}</b>`,
   },
   {
     id: "krit",
-    title: "Kritischer Schub",
+    title: "Critical Push",
     icon: "⚡",
     color: "teal",
     max: 4,
@@ -285,11 +285,11 @@ const ROH: TreeNodeDef[] = [
     growth: 3,
     req: [["hub", 2]],
     desc: (l) =>
-      `Jeder Hub hat diese Chance, <b>60 % weiter</b> vorzufahren.<br><br>Chance: <b>${pct(kritChance(l))}</b>`,
+      `Each stroke has this chance to reach <b>60% further</b>.<br><br>Chance: <b>${pct(kritChance(l))}</b>`,
   },
   {
     id: "langarm",
-    title: "Langer Arm",
+    title: "Long Arm",
     icon: "⟹",
     color: "teal",
     max: 1,
@@ -297,11 +297,11 @@ const ROH: TreeNodeDef[] = [
     growth: 1,
     capstone: true,
     req: [["krit", 4]],
-    desc: () => `Ein kritischer Schub fährt nicht mehr 60 %, sondern <b>120 %</b> weiter vor.`,
+    desc: () => `A Critical Push now reaches <b>120%</b> further instead of 60%.`,
   },
   {
     id: "stampf",
-    title: "Stampfer",
+    title: "Stomper",
     icon: "⇓",
     color: "teal",
     max: 4,
@@ -309,48 +309,48 @@ const ROH: TreeNodeDef[] = [
     growth: 3,
     req: [["tempo", 3]],
     desc: (l) =>
-      `Die Plattform bebt in festen Abständen kurz nach vorn. Was an der Kante wackelt, fällt.<br><br>${
-        l > 0 ? `Alle <b>${sec(stampfTakt(l))}</b> · Stoß <b>${stampfKraft(l)}</b>` : "Noch aus"
+      `Every so often, the board jolts forward. Anything teetering on the edge falls.<br><br>${
+        l > 0 ? `Every <b>${sec(stampfTakt(l))}</b> · Force <b>${stampfKraft(l)}</b>` : "Not active yet"
       }`,
   },
 
   /* ================================================= Auszahlung ========= */
   {
     id: "praegung",
-    title: "Prägung",
+    title: "Minting",
     icon: "◆",
     color: "pink",
     max: 6,
     baseCost: 30,
     growth: 2.2,
     req: [["automat", 1]],
-    desc: (l) => `Jede Münze ist beim Fallen mehr wert.<br><br>Wert: <b>${mal(praegung(l))}</b>`,
+    desc: (l) => `Every coin is worth more when it falls.<br><br>Value: <b>${mal(praegung(l))}</b>`,
   },
   {
     id: "schutz",
-    title: "Seitenschutz",
+    title: "Side Guards",
     icon: "▥",
     color: "pink",
     max: 5,
     baseCost: 50,
     growth: 2.3,
     req: [["praegung", 1]],
-    desc: (l) => `Die seitlichen Abgründe werden schmaler.<br><br>Breite je Abgrund: <b>${pct(abgrund(l), 1)}</b>`,
+    desc: (l) => `The side gutters get narrower.<br><br>Width per gutter: <b>${pct(abgrund(l), 1)}</b>`,
   },
   {
     id: "doppelfach",
-    title: "Breites Doppelfach",
+    title: "Wide Double Slot",
     icon: "×2",
     color: "pink",
     max: 4,
     baseCost: 140,
     growth: 2.4,
     req: [["schutz", 1]],
-    desc: (l) => `Das Doppelfach wird breiter.<br><br>Breite: <b>${pct(doppelBreite(l), 1)}</b>`,
+    desc: (l) => `The Double Slot gets wider.<br><br>Width: <b>${pct(doppelBreite(l), 1)}</b>`,
   },
   {
     id: "auffang",
-    title: "Auffangnetz",
+    title: "Safety Net",
     icon: "⊻",
     color: "pink",
     max: 3,
@@ -358,11 +358,11 @@ const ROH: TreeNodeDef[] = [
     growth: 3.2,
     req: [["schutz", 2]],
     desc: (l) =>
-      `Münzen, die in einen Abgrund fallen, zahlen noch einen Teil ihres Werts aus.<br><br>Anteil: <b>${pct(auffang(l))}</b>`,
+      `Coins that fall into a gutter still pay out part of their value.<br><br>Share: <b>${pct(auffang(l))}</b>`,
   },
   {
     id: "fenster",
-    title: "Kaskadenfenster",
+    title: "Cascade Window",
     icon: "⧗",
     color: "pink",
     max: 4,
@@ -370,11 +370,11 @@ const ROH: TreeNodeDef[] = [
     growth: 2.3,
     req: [["praegung", 1]],
     desc: (l) =>
-      `Eine Combo bleibt länger offen — mehr Münzen zählen als „gemeinsam gefallen“.<br><br>Fenster: <b>${sec(comboFenster(l), 2)}</b>`,
+      `A combo stays open longer — more coins count as “falling together.”<br><br>Window: <b>${sec(comboFenster(l), 2)}</b>`,
   },
   {
     id: "kaskade",
-    title: "Kaskadenbonus",
+    title: "Cascade Bonus",
     icon: "≋",
     color: "pink",
     max: 5,
@@ -382,11 +382,11 @@ const ROH: TreeNodeDef[] = [
     growth: 3,
     req: [["fenster", 2]],
     desc: (l) =>
-      `Jede Combo ab ×2 wird zusätzlich verstärkt.<br><br>Combo-Multiplikator: <b>${mal(1 + comboBonus(l))}</b>`,
+      `Every combo of ×2 or more gets an extra boost.<br><br>Combo multiplier: <b>${mal(1 + comboBonus(l))}</b>`,
   },
   {
     id: "goldkante",
-    title: "Goldene Kante",
+    title: "Golden Edge",
     icon: "×3",
     color: "pink",
     max: 1,
@@ -394,46 +394,46 @@ const ROH: TreeNodeDef[] = [
     growth: 1,
     capstone: true,
     req: [["kaskade", 5]],
-    desc: () => `Das Doppelfach zahlt nicht mehr das Doppelte, sondern das <b>Dreifache</b>.`,
+    desc: () => `The Double Slot now pays <b>triple</b> instead of double.`,
   },
 
   /* ================================================= Truhe ============== */
   {
     id: "truhenwert",
-    title: "Schatzkunde",
+    title: "Treasure Lore",
     icon: "▤",
     color: "magenta",
     max: 5,
     baseCost: 100,
     growth: 2.3,
     req: [["automat", 1]],
-    desc: (l) => `Schatztruhen sind mehr wert.<br><br>Truhenwert: <b>${mal(truheWert(l))}</b>`,
+    desc: (l) => `Treasure chests are worth more.<br><br>Chest value: <b>${mal(truheWert(l))}</b>`,
   },
   {
     id: "lieferung",
-    title: "Expresslieferung",
+    title: "Express Delivery",
     icon: "⇣",
     color: "magenta",
     max: 4,
     baseCost: 160,
     growth: 2.2,
     req: [["truhenwert", 1]],
-    desc: (l) => `Nach einer Truhe kommt die nächste schneller.<br><br>Pause: <b>${sec(truhePause(l))}</b>`,
+    desc: (l) => `After a chest, the next one arrives sooner.<br><br>Delay: <b>${sec(truhePause(l))}</b>`,
   },
   {
     id: "fuellung",
-    title: "Prall gefüllt",
+    title: "Packed Chests",
     icon: "⁘",
     color: "magenta",
     max: 4,
     baseCost: 260,
     growth: 2.4,
     req: [["truhenwert", 2]],
-    desc: (l) => `Eine geborgene Truhe lässt mehr Münzen regnen.<br><br>Münzen: <b>${truheRegen(l)}</b>`,
+    desc: (l) => `A cashed-in chest rains down more coins.<br><br>Coins: <b>${truheRegen(l)}</b>`,
   },
   {
     id: "juwelen",
-    title: "Juwelenfund",
+    title: "Jewel Find",
     icon: "◈",
     color: "magenta",
     max: 3,
@@ -441,13 +441,13 @@ const ROH: TreeNodeDef[] = [
     growth: 3.5,
     req: [["fuellung", 2]],
     desc: (l) =>
-      `Jede Münze aus einer Truhe wird mit dieser Chance zu einer deiner freigeschalteten <b>Sondermünzen</b>.<br><br>Chance: <b>${pct(truheJuwel(l))}</b>`,
+      `Each coin from a chest has this chance to become one of your unlocked <b>special coins</b>.<br><br>Chance: <b>${pct(truheJuwel(l))}</b>`,
   },
 
   /* ================================================= Münzen ============= */
   {
     id: "silberschacht",
-    title: "Silberschacht",
+    title: "Silver Chute",
     icon: "◇",
     color: "amber",
     max: 2,
@@ -455,22 +455,22 @@ const ROH: TreeNodeDef[] = [
     growth: 3,
     req: [["automat", 1]],
     desc: (l) =>
-      `Eine Silbermünze kostet weniger Plätze aus dem Vorrat.<br><br>Kosten: <b>${silberVorrat(l)}</b> aus dem Vorrat`,
+      `A Silver coin takes fewer coins from your supply.<br><br>Cost: <b>${silberVorrat(l)}</b> from supply`,
   },
   {
     id: "feinsilber",
-    title: "Feinsilber",
+    title: "Fine Silver",
     icon: "✧",
     color: "amber",
     max: 4,
     baseCost: 90,
     growth: 2.3,
     req: [["silberschacht", 1]],
-    desc: (l) => `Silbermünzen sind mehr wert.<br><br>Wert: <b>${mal(silberWert(l))}</b>`,
+    desc: (l) => `Silver coins are worth more.<br><br>Value: <b>${mal(silberWert(l))}</b>`,
   },
   {
     id: "werkstatt",
-    title: "Münzwerkstatt",
+    title: "Coin Workshop",
     icon: "⚒",
     color: "magenta",
     max: 1,
@@ -478,18 +478,18 @@ const ROH: TreeNodeDef[] = [
     growth: 1,
     req: [["silberschacht", 1]],
     desc: () =>
-      `Öffnet die Werkstatt für <b>Sondermünzen</b>. Von hier aus schaltest du Gold-, Magnet- und Sprengmünzen frei — und über sie die übrigen.`,
+      `Opens the workshop for <b>special coins</b>. From here you unlock Gold, Magnet and Bomb Coins — and through them, all the rest.`,
   },
   {
     id: "praegerei",
-    title: "Münzprägerei",
+    title: "Coin Mint",
     icon: "%",
     color: "magenta",
     max: 4,
     baseCost: 5000,
     growth: 3.2,
     req: [["werkstatt", 1]],
-    desc: (l) => `Alle Sondermünzen kosten beim Einwurf weniger Geld.<br><br>Preis: <b>${mal(praegerei(l))}</b>`,
+    desc: (l) => `All special coins cost less cash to drop.<br><br>Price: <b>${mal(praegerei(l))}</b>`,
   },
   ...SONDER.flatMap(sonderKnoten),
 ];

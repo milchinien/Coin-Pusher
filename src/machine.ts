@@ -443,7 +443,7 @@ export class Machine {
       this.truhenTimer = st.truhePause;
       if (zone === "abgrund") {
         this.hooks.truhe("verloren", 0, zone);
-        this.pop({ x: b.x, y: popY - 30, text: "Truhe verloren", farbe: SIGNAL.abgrund, gross: true });
+        this.pop({ x: b.x, y: popY - 30, text: "Chest lost", farbe: SIGNAL.abgrund, gross: true });
         return;
       }
       const wert = Math.round(truhenWert(this.truhenGeborgen) * st.truheWert * zoneMult);
@@ -479,7 +479,7 @@ export class Machine {
         n.vx += Math.sign(dx) * s * 0.35;
       }
       this.welle(b.x, D - 10, R, COINS.spreng.ring);
-      this.pop({ x: b.x, y: popY - 40, text: "BUMM", farbe: COINS.spreng.ring, gross: true });
+      this.pop({ x: b.x, y: popY - 40, text: "BOOM", farbe: COINS.spreng.ring, gross: true });
     }
     if (kind === "koenig" && zone !== "abgrund") {
       this.combo.koenig += st.coins.koenig.kraft;
@@ -699,7 +699,7 @@ export class Machine {
         ctx.fillText(`×${st.doppelMult}`, x0 + bw / 2, D + TRAY / 2 + 6);
       } else {
         ctx.font = "800 15px Nunito, sans-serif";
-        ctx.fillText("A U S Z A H L U N G", x0 + bw / 2, D + TRAY / 2 + 6);
+        ctx.fillText("P A Y O U T", x0 + bw / 2, D + TRAY / 2 + 6);
       }
     }
 
@@ -944,7 +944,7 @@ export class Machine {
     if (this.combo.anzahl > 0) {
       const mult = this.comboFaktor(st);
       const farbe = mult >= 8 ? C.magenta : mult >= 2 ? C.amber : C.muted;
-      const text = `${this.combo.anzahl} × fallend   ·   COMBO ×${fmtMult(mult)}`;
+      const text = `${this.combo.anzahl} falling   ·   COMBO ×${fmtMult(mult)}`;
       const s = mult > 1 ? 1 + Math.min(0.35, this.combo.timer / st.comboFenster / 6) : 1;
       ctx.font = `800 ${Math.round(20 * s)}px Nunito, sans-serif`;
       ctx.fillStyle = sh(0.5);

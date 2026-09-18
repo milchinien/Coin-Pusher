@@ -54,19 +54,19 @@ const machine = new Machine(() => stats, {
   comboEnde(anzahl, mult, bonus) {
     gutschreiben(bonus);
     S.stats.besteCombo = Math.max(S.stats.besteCombo, anzahl);
-    if (mult >= 4) toast(`<b>Kaskade!</b> ${anzahl} Objekte · ×${mult.toFixed(1).replace(/\.0$/, "")} · +${fmt(bonus)}`, 2.6);
+    if (mult >= 4) toast(`<b>Cascade!</b> ${anzahl} items · ×${mult.toFixed(1).replace(/\.0$/, "")} · +${fmt(bonus)}`, 2.6);
   },
   truhe(ergebnis, wert, zone) {
     if (ergebnis === "verloren") {
-      toast("Die Truhe ist in den <b>Abgrund</b> gestürzt.", 2.6);
+      toast("The chest fell into the <b>gutter</b>.", 2.6);
     } else {
       S.stats.truhen++;
-      const fach = zone === "doppel" ? " im <b>Doppelfach</b>" : "";
-      toast(`Schatztruhe geborgen${fach}: <b>+${fmt(wert)}</b> und ein Münzregen!`, 3);
+      const fach = zone === "doppel" ? " in the <b>Double Slot</b>" : "";
+      toast(`Chest cashed in${fach}: <b>+${fmt(wert)}</b> and a coin shower!`, 3);
     }
   },
   lieferung() {
-    toast("<b>Schatzlieferung!</b> Eine neue Truhe landet.", 2);
+    toast("<b>Chest delivery!</b> A new chest is landing.", 2);
   },
 });
 
@@ -107,7 +107,7 @@ function einwerfen(): boolean {
   } else if (S.geld >= p.geld) {
     S.geld -= p.geld;
   } else {
-    toast(p.vorrat > 0 ? "Der Vorrat ist leer und das Geld reicht nicht." : "Dafür reicht das Geld nicht.", 1.4);
+    toast(p.vorrat > 0 ? "Supply empty and not enough cash." : "Not enough cash.", 1.4);
     return false;
   }
   S.stats.eingeworfen++;
@@ -155,13 +155,13 @@ function kaufeStufe(id: string): void {
   if (id.startsWith("coin_")) {
     const kind = id.slice(5) as CoinKind;
     baueMuenzwahl();
-    toast(`Neue Münze: <b>${COINS[kind].name}</b> &mdash; Taste ${taste(kind)} in der Münzwahl.`, 3.5);
+    toast(`New coin: <b>${COINS[kind].name}</b> &mdash; press ${taste(kind)} to select it.`, 3.5);
   } else if (id === "auto" && stufe === 1) {
     autoTimer = stats.autoTakt;
-    toast("<b>Auto-Einwurf</b> läuft — der Automat wirft jetzt selbst ein.", 2.4);
+    toast("<b>Auto-Drop</b> is on — the machine now drops coins by itself.", 2.4);
   } else if (id === "regen" && stufe === 1) {
     regenTimer = 0;
-    toast("<b>Münzregen</b> eingerichtet.", 2.4);
+    toast("<b>Coin Shower</b> installed.", 2.4);
   }
   schnellSig = "";
   speichern(stand());
@@ -185,9 +185,9 @@ function showTooltip(def: TreeNodeDef | null, sx: number, sy: number, links = fa
   const preisText = `<span class="coin-glyph coin-glyph--klein"></span> ${fmt(cost)}`;
 
   let footer: string;
-  if (maxed) footer = `<div class="tt-cost tt-cost--max">${def.max === 1 ? "FREIGESCHALTET" : "MAX"}</div>`;
-  else if (!unlocked) footer = `<div class="tt-cost tt-cost--no">GESPERRT</div>`;
-  else if (affordable) footer = `<div class="tt-cost tt-cost--ok">${cost === 0 ? "GRATIS" : preisText} &nbsp;·&nbsp; KAUFEN</div>`;
+  if (maxed) footer = `<div class="tt-cost tt-cost--max">${def.max === 1 ? "UNLOCKED" : "MAX"}</div>`;
+  else if (!unlocked) footer = `<div class="tt-cost tt-cost--no">LOCKED</div>`;
+  else if (affordable) footer = `<div class="tt-cost tt-cost--ok">${cost === 0 ? "FREE" : preisText} &nbsp;·&nbsp; BUY</div>`;
   else footer = `<div class="tt-cost tt-cost--no">${preisText}</div>`;
 
   const level = `<div class="tt-level${lvl > 0 ? "" : " tt-level--off"}">${lvl} / ${def.max}</div>`;
@@ -255,7 +255,7 @@ function baueMuenzwahl(): void {
     el.title = `${COINS[kind].name}: ${COINS[kind].kurz}`;
     el.innerHTML = `<span class="coin-key">${taste(kind)}</span>
       <canvas class="coin-canvas" width="68" height="68"></canvas>
-      <span class="coin-name">${COINS[kind].name.replace("münze", "")}</span>
+      <span class="coin-name">${COINS[kind].name.replace(/ Coin$/, "")}</span>
       <span class="coin-cost"></span>`;
     const cv = el.querySelector("canvas")!;
     const c2 = cv.getContext("2d")!;
@@ -312,7 +312,7 @@ function updateSchnellkauf(): void {
   elShop.innerHTML = "";
   zeilen = [];
   if (!liste.length) {
-    elShop.innerHTML = `<p class="shop-empty">Alles Erreichbare ist gekauft. Im Upgrade-Baum wartet der Rest.</p>`;
+    elShop.innerHTML = `<p class="shop-empty">You bought everything in reach. The rest awaits in the Upgrade Tree.</p>`;
     return;
   }
   liste.forEach((def, i) => {
@@ -323,7 +323,7 @@ function updateSchnellkauf(): void {
     el.innerHTML = `
       <span class="shop-icon shop-icon--${def.color}" aria-hidden="true">${def.icon}</span>
       <span class="shop-info">
-        <span class="shop-name">${def.title} <span class="shop-lv">${def.max > 1 ? `${lv}/${def.max}` : "neu"}</span></span>
+        <span class="shop-name">${def.title} <span class="shop-lv">${def.max > 1 ? `${lv}/${def.max}` : "new"}</span></span>
         <span class="shop-eff">${kurztext(def, lv)}</span>
       </span>
       <span class="shop-cost">${fmt(k)}</span>
@@ -360,15 +360,15 @@ function updateHud(): void {
   const t = machine.truheAufFeld;
   const n = machine.naechsteTruhe;
   elTruhe.innerHTML = t
-    ? `Auf dem Feld · Wert <b>${fmt(truhenWert(machine.truhenGeborgen) * stats.truheWert)}</b>`
+    ? `On the board · Value <b>${fmt(truhenWert(machine.truhenGeborgen) * stats.truheWert)}</b>`
     : n === null
-      ? "Landet gerade …"
-      : `Nächste Lieferung in <b>${Math.ceil(n)} s</b>`;
+      ? "Landing …"
+      : `Next delivery in <b>${Math.ceil(n)}s</b>`;
 
   for (const b of muenzKnoepfe) {
     const p = preis(b.kind);
     const ausVorrat = p.vorrat > 0 && S.vorrat >= p.vorrat;
-    b.kosten.textContent = ausVorrat ? `${p.vorrat} Vorrat` : `${fmt(p.geld)} Geld`;
+    b.kosten.textContent = ausVorrat ? `${p.vorrat} supply` : `${fmt(p.geld)} cash`;
     b.el.classList.toggle("is-poor", !ausVorrat && S.geld < p.geld);
   }
 }
@@ -548,10 +548,10 @@ const elWipe = $("wipe");
 elWipe.addEventListener("click", () => {
   if (!wipeScharf) {
     wipeScharf = true;
-    elWipe.textContent = "Wirklich löschen?";
+    elWipe.textContent = "Really delete?";
     setTimeout(() => {
       wipeScharf = false;
-      elWipe.textContent = "Spielstand löschen";
+      elWipe.textContent = "Delete save";
     }, 3000);
     return;
   }
@@ -564,10 +564,10 @@ elWipe.addEventListener("click", () => {
   baueMuenzwahl();
   schnellSig = "";
   wipeScharf = false;
-  elWipe.textContent = "Spielstand löschen";
+  elWipe.textContent = "Delete save";
   elModal.classList.add("hidden");
   speichern(stand());
-  toast("Neuer Automat aufgestellt.", 2);
+  toast("Fresh machine set up.", 2);
 });
 
 /* ---------------------------------------------------------- Speichern --- */
@@ -625,7 +625,7 @@ function frame(now: number): void {
     if (regenTimer >= stats.regenTakt) {
       regenTimer = 0;
       machine.regnen(Array.from({ length: stats.regenMenge }, () => glueck("kupfer")));
-      toast("<b>Münzregen!</b>", 1.4);
+      toast("<b>Coin Shower!</b>", 1.4);
     }
   }
 
